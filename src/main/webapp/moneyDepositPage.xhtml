@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<div style="margin-bottom: 2%">
+		<h:form>
+			<p:growl id="messages" />
+
+			<p:menubar style="background-color: white; border: none">
+				<p:menuitem>
+					<img
+						src="./img/candyLogo.jpg"
+						alt="img" style="width: 180px"></img>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('mainPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Main Page" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('historyPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="History" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink
+							action="#{userBean.changePage('configurationsPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Configurations" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem rendered="#{userBean.role == 'ADMIN'}">
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('moneyDepositPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Money Deposit" style="color: blue" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+
+				<f:facet name="options">
+					<div style="margin-top: 30px">
+						<p:outputLabel style="font-size: x-large" value="#{userBean.name}"></p:outputLabel>
+						<p:commandButton value="Logout" action="#{userBean.processLogout}"
+							style="margin-left: 40px; background: #ffe687; color: white; font-weight: normal;" />
+					</div>
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+</h:head>
+<h:body style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
+background-size: cover; background-position: center;">
+	<div style="text-align: -webkit-center;">
+		<div
+			style="width: fit-content; display: flex; justify-content: center">
+			<p:panel
+				style="box-shadow: 5px 10px 8px 4px #888888; border-radius: 10px">
+				<div style="display: flex; flex-direction: row; align-items: center">
+					<h1 style="margin-right: 5px">Total money in the machine:</h1>
+					<p:outputLabel value="#{machineBean.totalMoneyInTheMachine} €"
+						style="font-size: larger"></p:outputLabel>
+				</div>
+				<div style="width: fit-content;">
+					<p:panel style="border-radius: 10px">
+						<h:form>
+							<h:outputText value="Money: " />
+							<h:outputText id="coin" value="#{machineBean.totalMoney} €" />
+							<h:panelGrid columns="2" style="margin-top: 2px">
+
+								<p:commandButton value="0.05"
+									action="#{machineBean.incrementCoin('0.05')}" update="coin"
+									style="border-radius: 20px" />
+								<p:commandButton value="0.10"
+									action="#{machineBean.incrementCoin('0.10')}" update="coin"
+									style="border-radius: 20px" />
+								<p:commandButton value="0.20"
+									action="#{machineBean.incrementCoin('0.20')}" update="coin"
+									style="border-radius: 20px" />
+								<p:commandButton value="0.50"
+									action="#{machineBean.incrementCoin('0.50')}" update="coin"
+									style="border-radius: 20px" />
+								<p:commandButton value="1.00"
+									action="#{machineBean.incrementCoin('1.00')}" update="coin"
+									style="border-radius: 20px" />
+								<p:commandButton value="2.00"
+									action="#{machineBean.incrementCoin('2.00')}" update="coin"
+									style="border-radius: 20px" />
+
+							</h:panelGrid>
+							<div style="text-align: center">
+								<p:commandButton value="Deposit" ajax="false"
+									action="#{machineBean.depositMoney}"
+									style="width: -webkit-fill-available" />
+							</div>
+
+						</h:form>
+					</p:panel>
+				</div>
+			</p:panel>
+		</div>
+	</div>
+
+</h:body>
+</html>

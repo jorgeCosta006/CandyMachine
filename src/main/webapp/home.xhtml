@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+</h:head>
+<h:body>
+	<div style="display: flex; flex-direction: column; margin-top: 10%">
+		<div style="display: flex; flex-direction: row; align-self: center;">
+			<div>
+				<img src="./img/candylogo.png" alt="logo" />
+			</div>
+
+			<div
+				style="display: flex; flex-direction: column; justify-content: space-evenly;">
+				<p:panel
+					style="box-shadow: 5px 10px 8px 4px #888888; border-radius: 10px">
+					<h:form>
+						<h:panelGrid columns="2">
+							<p:outputLabel value="E-mail" />
+							<p:inputText value="#{userBean.email}" />
+							<p:outputLabel value="Password" />
+							<p:password value="#{userBean.password}" />
+						</h:panelGrid>
+						<!-- 						<h:outputLabel /> -->
+						<div style="text-align: center; margin-top: 2%">
+							<p:commandButton value="Login" action="#{userBean.processLogin}"
+								style="padding: 0px 100px;" />
+						</div>
+					</h:form>
+				</p:panel>
+				<p:panel
+					style="box-shadow: 5px 10px 8px 4px #888888; border-radius: 10px">
+					<h:form>
+						<p>
+							Don't have an account? <a onclick="PF('crUser').show()"
+								style="color: blue">Register here</a>
+						</p>
+					</h:form>
+				</p:panel>
+			</div>
+		</div>
+	</div>
+
+
+	<!--                        CREATE USER MODAL                                      -->
+	<h:form>
+
+		<p:dialog id="createUserModal" modal="true" widgetVar="crUser"
+			resizable="false" stylr="position:absolute;" header="Create User"
+			style="border-radius: 10px" hideEffect="false">
+			<h:panelGrid columns="2" id="createUserPanel">
+	            Name: 
+	            <p:inputText id="username" value="#{userBean.name}" required="true" requiredMessage="Surname is required."/>
+	            
+	            E-mail: 
+	            <p:inputText id="crEmail" value="#{userBean.crEmail}" />
+
+				Role:
+                <p:selectOneMenu id="option" value="#{userBean.role}">
+					<f:selectItem itemLabel="Client" itemValue="CLIENT" />
+					<f:selectItem itemLabel="Admin" itemValue="ADMIN" />
+				</p:selectOneMenu>
+	            
+	            Password: 
+	            <p:password id="crPassword" value="#{userBean.crPassword}" />
+	            
+	            Repeat Password: 
+	            <p:password id="repeatCrPassword"
+					value="#{userBean.repeatCrPassword}" />
+
+			</h:panelGrid>
+
+			<p:outputPanel style="margin-top: 5%; float: right;">
+				<p:commandButton value="Cancel" ajax="false"
+					onclick="PF('crUser').hide()" />
+				<p:commandButton value="Create" ajax="false"
+					action="#{userBean.createUser}"/>
+			</p:outputPanel>
+		</p:dialog>
+<!-- jorge -->
+	</h:form>
+</h:body>
+</html>

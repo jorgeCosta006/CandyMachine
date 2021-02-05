@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<div style="margin-bottom: 2%" class="card">
+		<h:form>
+			<p:menubar style="background-color: white; border: none">
+				<p:menuitem>
+					<img
+						src="./img/candyLogo.jpg"
+						alt="img" style="width: 180px"></img>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('mainPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Main Page" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('historyPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="History" style="color: blue" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem>
+					<div style="margin-top: 33px">
+						<p:commandLink
+							action="#{userBean.changePage('configurationsPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Configurations" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+				<p:menuitem rendered="#{userBean.role == 'ADMIN'}">
+					<div style="margin-top: 33px">
+						<p:commandLink action="#{userBean.changePage('moneyDepositPage')}"
+							style="margin-right:20px;" ajax="false">
+							<h:outputText value="Money Deposit" />
+						</p:commandLink>
+					</div>
+				</p:menuitem>
+
+				<f:facet name="options">
+					<div style="margin-top: 30px">
+						<p:outputLabel style="font-size: x-large" value="#{userBean.name}"></p:outputLabel>
+						<p:commandButton value="Logout" action="#{userBean.processLogout}"
+							style="margin-left: 40px; background: #ffe687; color: white; font-weight: normal;" />
+					</div>
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+</h:head>
+<h:body style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
+background-size: cover; background-position: center;">
+	<h:form rendered="#{userBean.role == 'CLIENT'}">
+		<div class="card" style="text-align: -webkit-center;">
+			<h2 style="font-family: Arial, Helvetica, sans-serif;">Purchase</h2>
+			<p:dataTable var="product" value="#{historyBean.history}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+				<p:column headerText="Movimento">
+					<h:outputText value="#{product.movimento}" />
+				</p:column>
+
+				<p:column headerText="Candy Name">
+					<h:outputText value="#{product.purchase.candy.name}" />
+				</p:column>
+
+				<p:column headerText="Quantity">
+					<h:outputText value="#{product.purchase.quantity}" />
+				</p:column>
+
+				<p:column headerText="Price">
+					<h:outputText value="#{product.purchase.totalPrice}" />
+				</p:column>
+
+				<p:column headerText="Date">
+					<h:outputText value="#{product.purchase.dateTime}" />
+				</p:column>
+			</p:dataTable>
+		</div>
+	</h:form>
+
+	<h:form rendered="#{userBean.role == 'ADMIN'}">
+		<div class="card" style="text-align: -webkit-center;">
+			<h2 style="font-family: Arial, Helvetica, sans-serif;">Money Deposit</h2>
+			<p:dataTable var="product" value="#{historyBean.moneyDepositHistory}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+				<p:column headerText="Movimento">
+					<h:outputText value="#{product.movimento}" />
+				</p:column>
+
+				<p:column headerText="Value added">
+					<h:outputText value="#{product.moneyDeposit.totalValue} €" />
+				</p:column>
+
+				<p:column headerText="Date">
+					<h:outputText value="#{product.moneyDeposit.date}" />
+				</p:column>
+			</p:dataTable>
+		</div>
+	</h:form>
+
+	<h:form rendered="#{userBean.role == 'ADMIN'}" style="margin-top: 100px">
+		<div class="card" style="text-align: -webkit-center;">
+			<h2 style="font-family: Arial, Helvetica, sans-serif;">Candy Deposit</h2>
+			<p:dataTable var="product" value="#{historyBean.candyDepositHistory}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+				<p:column headerText="Movimento">
+					<h:outputText value="#{product.movimento}" />
+				</p:column>
+
+				<p:column headerText="Value added">
+					<h:outputText value="#{product.candyDeposit.candy.name}" />
+				</p:column>
+
+				<p:column headerText="Machine money">
+					<h:outputText value="#{product.candyDeposit.quantity}" />
+				</p:column>
+
+				<p:column headerText="Date">
+					<h:outputText value="#{product.candyDeposit.date}" />
+				</p:column>
+			</p:dataTable>
+		</div>
+	</h:form>
+</h:body>
+</html>
