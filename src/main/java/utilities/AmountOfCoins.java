@@ -1,5 +1,9 @@
 package utilities;
-
+/**
+ * 
+ * Classe criada para registo temporário de um conjunto de moedas;
+ *
+ */
 public class AmountOfCoins {
 	private int coins5Cent;
 	private int coins10Cent;

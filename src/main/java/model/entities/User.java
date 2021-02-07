@@ -6,6 +6,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+/**
+ * 
+ * Tabela que contem os users, nenhum user pode ser apagado, é feito um softDelete para possivel track de histórico;
+ *
+ */
 
 @Entity
 public class User {

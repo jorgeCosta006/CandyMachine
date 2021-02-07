@@ -1,5 +1,10 @@
 package beans;
 
+/**
+ * 
+ * Bean reponsavel por vies com ações referentes a dinheiro: money deposit, realização de uma compra de candy;
+ *
+ */
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.List;
@@ -141,6 +146,10 @@ public class MachineBean implements Serializable {
 		this.totalMoneyInTheMachine = totalMoneyInTheMachine;
 	}
 
+	/**
+	 * Metodo boolean que devolve true se o dinheiro inserido for superior ao preço
+	 * do candy, false se for o contrário;
+	 */
 	public boolean checkForEnoughMoney() {
 		AmountOfCoins aoc = new AmountOfCoins(coins5Cent, coins10Cent, coins20Cent, coins50Cent, coins1Euro,
 				coins2Euro);
@@ -154,6 +163,13 @@ public class MachineBean implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Metodo que inicia a compra do candy, primeiro verifica se o dinheiro enserido
+	 * é suficiente depois se é possivel dar troco, se as duas forem verdade a
+	 * compra é realizada e o troco é devolvido, é feita uma redução na quantidade
+	 * de candy, é alterado a quantia de moedas em maquina e feito registos na
+	 * tabela MoneyMovement e CandyMovement;
+	 */
 	public String buyCandy() {
 
 		boolean candyBought = false;
@@ -169,7 +185,7 @@ public class MachineBean implements Serializable {
 			Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("loggedMachine");
 			User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
-			
+
 			NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
 			nf_in.setMaximumFractionDigits(2);
 			String result = nf_in.format(totalMoney - candy.getPrice());
@@ -178,7 +194,7 @@ public class MachineBean implements Serializable {
 
 			if (changeInAmountOfCoins != null) {
 				MainPageBusiness mpb = new MainPageBusiness();
-				
+
 				mpb.changeCandyQuantityAndCreateCandyMovement(user, candy, machine);
 				mb.createMoneyMovement("In", amountOfCoinsAdded, user, machine);
 				if (changeValue != 0)
@@ -199,6 +215,9 @@ public class MachineBean implements Serializable {
 		return "";
 	}
 
+	/**
+	 * Devolve a mensagem referente a compra de um candy, compra realizada e troco ou dinheiro insuficiente;
+	 */
 	public void showMessage(boolean candyBought, AmountOfCoins aoc, double changeValue) {
 		FacesMessage message = null;
 		if (candyBought) {
@@ -215,6 +234,9 @@ public class MachineBean implements Serializable {
 		PrimeFaces.current().dialog().showMessageDynamic(message);
 	}
 
+	/**
+	 * Metodo que serve para incrementar o registo de moedas e o total em dinheiro no bean;
+	 */
 	public void incrementCoin(String coin) {
 		NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
 		nf_in.setMaximumFractionDigits(2);
@@ -256,6 +278,9 @@ public class MachineBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Metodo para que sempre seja inicializado uma compra reponha as moedas a 0, e indique o candy em compra;
+	 */
 	public void turnCoinsToZero(Candy candy) {
 		coins5Cent = 0;
 		coins10Cent = 0;
@@ -267,6 +292,9 @@ public class MachineBean implements Serializable {
 		this.candy = candy;
 	}
 
+	/**
+	 * Metodo inicializa a alteração das moedas em caixa na tabela Machine; Primeiro faz uma verificação, caso não tenha recebido nenhuma quantidade em moedas retorna uma mensagem;
+	 */
 	public void depositMoney() {
 		if (coins5Cent == 0 && coins10Cent == 0 && coins20Cent == 0 && coins50Cent == 0 && coins1Euro == 0
 				&& coins2Euro == 0) {

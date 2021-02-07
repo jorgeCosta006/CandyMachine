@@ -8,7 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+/**
+ * 
+ * Tabela que guarda registo de criação, compra, edição, delete de candies na maquina;
+ *
+ */
 @Entity
 public class CandyMovement {
 

@@ -8,6 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+/**
+ * 
+ * Tabela que guarda registo de In/out de dinheiro na maquina;
+ *
+ */
 
 @Entity
 public class MoneyMovement {

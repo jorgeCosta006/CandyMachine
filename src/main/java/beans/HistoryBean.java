@@ -1,12 +1,13 @@
 package beans;
-
+/**
+ * Bean responsavel pela view history: receber e alimentar a view com as 3 listas diferentes, uma de cliente com registo de compras, outra duas de admin, uma para moviemntos de dinheiro e outra de doces;
+ */
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.OrderBy;
 
 import model.business.HistoryBusiness;
 import model.entities.CandyMovement;

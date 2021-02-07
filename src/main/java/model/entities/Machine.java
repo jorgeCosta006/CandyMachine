@@ -7,6 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+/**
+ * 
+ * Tabela que contem as maquinas;
+ *
+ */
 
 @Entity
 public class Machine {

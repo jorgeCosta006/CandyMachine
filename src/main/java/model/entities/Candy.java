@@ -4,6 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+/**
+ * 
+ * Tabela que guarda registo doces, nenhum doce pode ser apagado, é feito um softDelete para possivel track de histórico;
+ *
+ */
 
 @Entity
 public class Candy {

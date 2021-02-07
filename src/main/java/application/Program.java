@@ -3,7 +3,11 @@ package application;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
+/**
+ * 
+ * Main mantido para se for necessário criar a base de dados por codeFirst (de codigo para base de dados);
+ *
+ */
 public class Program {
 
 	public static void main(String[] args) {

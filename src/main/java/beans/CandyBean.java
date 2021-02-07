@@ -1,5 +1,7 @@
 package beans;
-
+/**
+ * Bean responável por mudanças em doces (exepto na compra que é feito no MachineBean);
+ */
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -66,8 +68,11 @@ public class CandyBean implements Serializable {
 		this.quantity = quantity;
 	}
 
+	/**
+	 * Metodo criar ou altera um doce já existente. Se não receber registos dá uma mensagem de erro, se criar dá uma mensagem de sucesso e actualiza a pagina;
+	 */
 	public String createOrUpdateCandy() {
-		if (price == 0 || quantity == 0) {
+		if ((candy == null && name == "") || price == 0 || quantity == 0) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Must fill all data");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
 
@@ -106,6 +111,9 @@ public class CandyBean implements Serializable {
 		this.candy = candy;
 	}
 
+	/**
+	 * Metodo aplicado com intuito de trazer a modal de edição com registo do candy a ser alterado; (sem sucesso)
+	 */
 	public void updateCandyBean(Candy candy) {
 		this.candy = candy;
 		construct();
@@ -130,6 +138,9 @@ public class CandyBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Para apagar os dados de um candy em registo no bean;
+	 */
 	public void eraseData() {
 		name = "";
 		price = 0.0;

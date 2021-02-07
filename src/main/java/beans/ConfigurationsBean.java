@@ -1,5 +1,7 @@
 package beans;
-
+/**
+ * Bean responsavel pela configurationPage: receber registo do user que está em sessão e realização de alterações;
+ */
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;

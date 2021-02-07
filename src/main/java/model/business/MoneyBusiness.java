@@ -13,8 +13,14 @@ import model.interfaces.IMachineDao;
 import model.interfaces.IMoneyMovementDao;
 import utilities.AmountOfCoins;
 
+/**
+ * Business responsável por ações referentes a dinheiro;
+ */
 public class MoneyBusiness {
 
+	/**
+	 * Metodo que altera as moedas na maquina guardadas na Tabela Machine;
+	 */
 	public double moneyDeposit(Machine machine, User user, AmountOfCoins amountOfCoinsAdded) {
 
 		IMachineDao md = new MachineDao();
@@ -43,6 +49,9 @@ public class MoneyBusiness {
 		return newTotalAmountInTheMachine;
 	}
 
+	/**
+	 * Cria tambem registo "In" na tabela MoneyMovement;
+	 */
 	public void createMoneyMovement(String action, AmountOfCoins amountOfCoins, User user, Machine machine) {
 		IMoneyMovementDao mmd = new MoneyMovementDao();
 
@@ -54,6 +63,9 @@ public class MoneyBusiness {
 		mmd.createOrUpdateMoneyMovent(moneyMovement);
 	}
 
+	/**
+	 * Calcula o total em euros do conjunto de moedas;
+	 */
 	public static double calculateTotal(AmountOfCoins amountOfCoins) {
 		NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
 		nf_in.setMaximumFractionDigits(2);
@@ -67,6 +79,9 @@ public class MoneyBusiness {
 		return totalAmount;
 	}
 
+	/**
+	 * Verifica somando as moedas da maquina e as inseridas se é possivel dar troco, se sim devolve o troco num conjunto de moedas se nao retorna null;
+	 */
 	public AmountOfCoins giveChange(Machine machine, AmountOfCoins AmountOfCoinsAdded, double changeValue) {
 		NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
 		nf_in.setMaximumFractionDigits(2);
@@ -75,66 +90,66 @@ public class MoneyBusiness {
 
 		AmountOfCoins aocToGive = new AmountOfCoins();
 
+		machine.setCoins2Euro(machine.getCoins2Euro() + AmountOfCoinsAdded.getCoins2Euro());
 		while (changeValue >= 2.00) {
-			int coins = machine.getCoins2Euro() + AmountOfCoinsAdded.getCoins2Euro();
-			if (coins != 0) {
+			if (machine.getCoins2Euro() != 0) {
 				changeValue -= 2;
-				machine.setCoins2Euro(coins - 1);
+				machine.setCoins2Euro(machine.getCoins2Euro() - 1);
 				aocToGive.setCoins2Euro(aocToGive.getCoins2Euro() + 1);
 			} else {
 				break;
 			}
 		}
 
+		machine.setCoins1Euro(machine.getCoins1Euro() + AmountOfCoinsAdded.getCoins1Euro());
 		while (changeValue >= 1.00) {
-			int coins = machine.getCoins1Euro() + AmountOfCoinsAdded.getCoins1Euro();
-			if (coins != 0) {
+			if (machine.getCoins1Euro() != 0) {
 				changeValue -= 1;
-				machine.setCoins1Euro(coins - 1);
+				machine.setCoins1Euro(machine.getCoins1Euro() - 1);
 				aocToGive.setCoins1Euro(aocToGive.getCoins1Euro() + 1);
 			} else {
 				break;
 			}
 		}
 
+		machine.setCoins50Cent(machine.getCoins50Cent() + AmountOfCoinsAdded.getCoins50Cent());
 		while (changeValue >= 0.50) {
-			int coins = machine.getCoins50Cent() + AmountOfCoinsAdded.getCoins50Cent();
-			if (coins != 0) {
+			if (machine.getCoins50Cent() != 0) {
 				changeValue = Double.valueOf(nf_in.format(changeValue - 0.50));
-				machine.setCoins50Cent(coins - 1);
+				machine.setCoins50Cent(machine.getCoins50Cent() - 1);
 				aocToGive.setCoins50Cent(aocToGive.getCoins50Cent() + 1);
 			} else {
 				break;
 			}
 		}
 
+		machine.setCoins20Cent(machine.getCoins20Cent() + AmountOfCoinsAdded.getCoins20Cent());
 		while (changeValue >= 0.20) {
-			int coins = machine.getCoins20Cent() + AmountOfCoinsAdded.getCoins20Cent();
-			if (coins != 0) {
+			if (machine.getCoins20Cent() != 0) {
 				changeValue = Double.valueOf(nf_in.format(changeValue - 0.20));
-				machine.setCoins20Cent(coins - 1);
+				machine.setCoins20Cent(machine.getCoins20Cent() - 1);
 				aocToGive.setCoins20Cent(aocToGive.getCoins20Cent() + 1);
 			} else {
 				break;
 			}
 		}
 
+		machine.setCoins10Cent(machine.getCoins10Cent() + AmountOfCoinsAdded.getCoins10Cent());
 		while (changeValue >= 0.10) {
-			int coins = machine.getCoins10Cent() + AmountOfCoinsAdded.getCoins10Cent();
-			if (coins != 0) {
+			if (machine.getCoins10Cent() != 0) {
 				changeValue = Double.valueOf(nf_in.format(changeValue - 0.10));
-				machine.setCoins10Cent(coins - 1);
+				machine.setCoins10Cent(machine.getCoins10Cent() - 1);
 				aocToGive.setCoins10Cent(aocToGive.getCoins10Cent() + 1);
 			} else {
 				break;
 			}
 		}
 
+		machine.setCoins5Cent(machine.getCoins5Cent() + AmountOfCoinsAdded.getCoins5Cent());
 		while (changeValue >= 0.05) {
-			int coins = machine.getCoins5Cent() + AmountOfCoinsAdded.getCoins5Cent();
-			if (coins != 0) {
+			if (machine.getCoins5Cent() != 0) {
 				changeValue = Double.valueOf(nf_in.format(changeValue - 0.05));
-				machine.setCoins5Cent(coins - 1);
+				machine.setCoins5Cent(machine.getCoins5Cent() - 1);
 				aocToGive.setCoins5Cent(aocToGive.getCoins5Cent() + 1);
 			} else {
 				break;

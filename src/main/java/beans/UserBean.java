@@ -1,5 +1,8 @@
 package beans;
 
+/**
+ * Bean responsável por registar e manter o user em sessão;
+ */
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -129,6 +132,9 @@ public class UserBean implements Serializable {
 		this.roles = roles;
 	}
 
+	/**
+	 * Metodo que efectua o login, primeiro verifica se o email com a respesctiva password existem;
+	 */
 	public void processLogin() {
 		AccountBusiness ab = new AccountBusiness();
 		User user = ab.findUserByEmailAndPassword(email, password);
@@ -155,6 +161,9 @@ public class UserBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Metodo de cria um user, verifica primeiro se os campos estão preenchidos, se o email já existe e se a password e repeated password correspondem;
+	 */
 	public String createUser() {
 
 		if (this.name == "" || this.crEmail == "" || this.crPassword == "" || this.role == null) {
@@ -198,6 +207,9 @@ public class UserBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Metodo para troca de paginas pelo o header menu;
+	 */
 	public void changePage(String page) {
 		try {
 

@@ -1,5 +1,8 @@
 package beans;
 
+/**
+ * Bean de request responsável para devolver o nome do user em sessão;
+ */
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -11,11 +14,12 @@ import model.entities.User;
 @RequestScoped
 public class NameBean {
 	private String name;
-	
+
 	@PostConstruct
 	public void construct() {
 		User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
-		setName(user.getName());
+		if (user != null)
+			setName(user.getName());
 	}
 
 	public String getName() {

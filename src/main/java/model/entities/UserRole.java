@@ -4,6 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+/**
+ * 
+ * Tabela que guarda os tipo de role;
+ *
+ */
 
 @Entity
 public class UserRole {

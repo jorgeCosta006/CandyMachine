@@ -11,7 +11,9 @@ import model.entities.Machine;
 import model.entities.User;
 import model.interfaces.ICandyDao;
 import model.interfaces.ICandyMovementDao;
-
+/**
+ * Business responsável por ações da mainPage;
+ */
 public class MainPageBusiness {
 
 	public List<Candy> returnCandyList() {
@@ -19,6 +21,9 @@ public class MainPageBusiness {
 		return cd.listOfCandies();
 	}
 
+	/**
+	 * Altera a quantidade de candies e criar um candyMovement após uma compra efectuada;
+	 */
 	public void changeCandyQuantityAndCreateCandyMovement(User user, Candy candy, Machine machine) {
 		ICandyDao cd = new CandyDao();
 		ICandyMovementDao cmd = new CandyMovementDao();
@@ -32,6 +37,9 @@ public class MainPageBusiness {
 
 	}
 
+	/**
+	 * Sfot delete num candy e cria um registo de Removed na tabela CandyMovement;
+	 */
 	public void removeCandy(Candy candy, User user, Machine machine) {
 		ICandyDao cd = new CandyDao();
 		candy.setActive(false);
@@ -43,6 +51,9 @@ public class MainPageBusiness {
 		cmd.createOrUpdateCandyMovement(candyMovement);
 	}
 
+	/**
+	 * Cria ou edita um candy e cria um novo registo conforme a ação efectuada na tabela CandyMovement; Retorna true se criado ou false se já existir um com esse nome;
+	 */
 	public boolean createOrUpdateCandy(User user, Candy candy, Machine machine, String name, double price,
 			int quantity) {
 		ICandyDao cd = new CandyDao();
@@ -57,7 +68,7 @@ public class MainPageBusiness {
 				cmd.createOrUpdateCandyMovement(candyMovement);
 			}
 
-			if (price != candy.getQuantity()) {
+			if (price != candy.getPrice()) {
 				candyMovementPrice = new CandyMovement("Updated Price", candy.getName(), price, null, new Date(), candy,
 						user, machine);
 				cmd.createOrUpdateCandyMovement(candyMovementPrice);

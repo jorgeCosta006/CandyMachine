@@ -8,7 +8,9 @@ import model.entities.CandyMovement;
 import model.entities.MoneyMovement;
 import model.interfaces.ICandyMovementDao;
 import model.interfaces.IMoneyMovementDao;
-
+/**
+ * Business responsável por comunicar com daos referentes a tabelas de registos: devolver lista MoneyMovement por maquina, lista CandyMovement por maquina, lista CandyMovement por user;
+ */
 public class HistoryBusiness {
 	
 	public List<MoneyMovement> returnMoneyMovementList(int machineId){
@@ -23,6 +25,9 @@ public class HistoryBusiness {
 		return cmd.candyMovementByMachineId(machineId);
 	}
 	
+	/**
+	 * Retorna lista de registo de compras feitas pelo utilizador;
+	 */
 	public List<CandyMovement> returnCandyMovementListToClient(int userId){
 		ICandyMovementDao cmd = new CandyMovementDao();
 		
