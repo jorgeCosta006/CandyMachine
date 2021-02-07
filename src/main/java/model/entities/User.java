@@ -4,8 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import Enums.EnumRoles;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class User {
@@ -19,12 +19,14 @@ public class User {
 	private String password;
 	private boolean isActive;
 
-	private EnumRoles userRole;
+	@ManyToOne
+	@JoinColumn(name="userRoleId")
+	private UserRole userRole;
 
 	public User() {	
 	}
 	
-	public User(String name, String email, String password, Boolean isActive, EnumRoles userRole) {
+	public User(String name, String email, String password, Boolean isActive, UserRole userRole) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
@@ -64,11 +66,11 @@ public class User {
 		this.isActive = isActive;
 	}
 
-	public EnumRoles getUserRole() {
+	public UserRole getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(EnumRoles userRole) {
+	public void setUserRole(UserRole userRole) {
 		this.userRole = userRole;
 	}
 

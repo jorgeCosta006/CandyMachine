@@ -13,6 +13,8 @@
 			<div>
 				<img src="./img/candylogo.png" alt="logo" />
 			</div>
+			
+			<p:growl id="growl" showDetail="true" life="2000"/>
 
 			<div
 				style="display: flex; flex-direction: column; justify-content: space-evenly;">
@@ -51,10 +53,10 @@
 
 		<p:dialog id="createUserModal" modal="true" widgetVar="crUser"
 			resizable="false" stylr="position:absolute;" header="Create User"
-			style="border-radius: 10px" hideEffect="false">
+			style="border-radius: 10px">
 			<h:panelGrid columns="2" id="createUserPanel">
 	            Name: 
-	            <p:inputText id="username" value="#{userBean.name}" required="true" requiredMessage="Surname is required."/>
+	            <p:inputText id="username" value="#{userBean.name}"/>
 	            
 	            E-mail: 
 	            <p:inputText id="crEmail" value="#{userBean.crEmail}" />

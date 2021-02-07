@@ -52,7 +52,7 @@
 
 				<f:facet name="options">
 					<div style="margin-top: 30px">
-						<p:outputLabel style="font-size: x-large" value="#{userBean.name}"></p:outputLabel>
+						<p:outputLabel style="font-size: x-large" value="#{nameBean.name}"></p:outputLabel>
 						<p:commandButton value="Logout" action="#{userBean.processLogout}"
 							style="margin-left: 40px; background: #ffe687; color: white; font-weight: normal;" />
 					</div>
@@ -102,6 +102,7 @@ background-size: cover; background-position: center;">
 						<p:column headerText="" rendered="#{userBean.role == 'ADMIN'}">
 							<p:commandButton value="Edit"
 								action="#{candyBean.updateCandyBean(product)}"
+								onclick="PF('updateCandy').show()"
 								style="background-image: none; background-color: #3ab2d6; color: white; font-weight: normal;" />
 							<p:commandButton value="Delete"
 								action="#{candyBean.receiveCandyObject(product)}"
@@ -147,7 +148,7 @@ background-size: cover; background-position: center;">
 
 	<!--                        CREATE CANDY MODAL                                      -->
 	<h:form id="uM">
-		<p:dialog id="createUserModal" modal="true" widgetVar="createCandy"
+		<p:dialog id="createCandyModal" modal="true" widgetVar="createCandy"
 			resizable="false" stylr="position:absolute;" header="Create Candy"
 			style="border-radius: 10px">
 			<h:panelGrid columns="2" id="createUserPanel">
@@ -191,13 +192,10 @@ background-size: cover; background-position: center;">
 
 	<!--                        UPDATE CANDY MODAL                                      -->
 	<h:form>
-		<p:dialog id="updateModal" modal="true" widgetVar="updateCandy"
+		<p:dialog id="updateCandyModal" modal="true" widgetVar="updateCandy"
 			resizable="false" stylr="position:absolute;" header="Update Candy"
 			style="border-radius: 10px">
 			<h:panelGrid columns="2" id="updateUserPanel">
-	            Name: 
-	            <p:inputText id="candyName" value="#{candyBean.name}" />
-	            
 	            Price: 
 	            <p:inputText id="price" value="#{candyBean.price}" />
 

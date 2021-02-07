@@ -2,28 +2,30 @@ package model.business;
 
 import java.util.List;
 
-import dao.HistoryDao;
-import model.entities.History;
-import model.interfaces.IHistoryDao;
+import dao.CandyMovementDao;
+import dao.MoneyMovementDao;
+import model.entities.CandyMovement;
+import model.entities.MoneyMovement;
+import model.interfaces.ICandyMovementDao;
+import model.interfaces.IMoneyMovementDao;
 
 public class HistoryBusiness {
 	
-	
-	public List<History> returnHistoryList(int userId) {
-		IHistoryDao hd = new HistoryDao();
+	public List<MoneyMovement> returnMoneyMovementList(int machineId){
+		IMoneyMovementDao mmd = new MoneyMovementDao();
 		
-		return hd.getHistoryList(userId);
+		return mmd.moneyMovementByMachineId(machineId);
 	}
 	
-	public List<History> returnCandyDepositHistoryList(int userId) {
-		IHistoryDao hd = new HistoryDao();
+	public List<CandyMovement> returnCandyMovementList(int machineId){
+		ICandyMovementDao cmd = new CandyMovementDao();
 		
-		return hd.getCandyDepositHistoryList(userId);
+		return cmd.candyMovementByMachineId(machineId);
 	}
 	
-	public List<History> returnMoneyDepositHistoryList(int userId) {
-		IHistoryDao hd = new HistoryDao();
+	public List<CandyMovement> returnCandyMovementListToClient(int userId){
+		ICandyMovementDao cmd = new CandyMovementDao();
 		
-		return hd.getMoneyDepositHistoryList(userId);
+		return cmd.candyMovementByUserId(userId);
 	}
 }

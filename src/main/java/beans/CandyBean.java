@@ -13,6 +13,7 @@ import org.primefaces.PrimeFaces;
 
 import model.business.MainPageBusiness;
 import model.entities.Candy;
+import model.entities.Machine;
 import model.entities.User;
 
 @ManagedBean(name = "candyBean", eager = true)
@@ -66,7 +67,7 @@ public class CandyBean implements Serializable {
 	}
 
 	public String createOrUpdateCandy() {
-		if (name == null || price == 0 || quantity == 0) {
+		if (price == 0 || quantity == 0) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Must fill all data");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
 
@@ -75,7 +76,9 @@ public class CandyBean implements Serializable {
 
 		MainPageBusiness mpb = new MainPageBusiness();
 		User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
-		boolean createdOrUpdated = mpb.createOrUpdateCandy(user, candy, name, price, quantity);
+		Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("loggedMachine");
+		boolean createdOrUpdated = mpb.createOrUpdateCandy(user, candy, machine, name, price, quantity);
 		FacesMessage message = null;
 
 		try {
@@ -106,14 +109,18 @@ public class CandyBean implements Serializable {
 	public void updateCandyBean(Candy candy) {
 		this.candy = candy;
 		construct();
-		PrimeFaces.current().executeScript("PF('updateCandy').show()");
+		PrimeFaces.current().executeScript("PF('crUser').show()");
 	}
 
 	public void deleteCandy() {
-		MainPageBusiness mpb = new MainPageBusiness();
-		mpb.removeCandy(candy);
 
 		try {
+			User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
+			Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("loggedMachine");
+			MainPageBusiness mpb = new MainPageBusiness();
+			mpb.removeCandy(candy, user, machine);
+
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message",
 					"Deleted! List of candies updated.");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
@@ -122,7 +129,7 @@ public class CandyBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void eraseData() {
 		name = "";
 		price = 0.0;

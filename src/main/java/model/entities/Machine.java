@@ -6,34 +6,42 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Machine {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int machineId;
-	
+
 	private String name;
 	private double totalCash;
-	
-	@OneToOne
-	@JoinColumn(name="amountOfCoinsId")
-	private AmountOfCoins amountOfCoins;
-	
+	private int coins5Cent;
+	private int coins10Cent;
+	private int coins20Cent;
+	private int coins50Cent;
+	private int coins1Euro;
+	private int coins2Euro;
+
 	@OneToMany
 	private List<Candy> candies;
-	
+
 	public Machine() {
-		
+
 	}
 
-	public Machine(String name, AmountOfCoins amountOfCoins) {
+	public Machine(String name, double totalCash, int coins5Cent, int coins10Cent, int coins20Cent, int coins50Cent,
+			int coins1Euro, int coins2Euro, List<Candy> candies) {
 		this.name = name;
-		this.amountOfCoins = amountOfCoins;
+		this.totalCash = totalCash;
+		this.coins5Cent = coins5Cent;
+		this.coins10Cent = coins10Cent;
+		this.coins20Cent = coins20Cent;
+		this.coins50Cent = coins50Cent;
+		this.coins1Euro = coins1Euro;
+		this.coins2Euro = coins2Euro;
+		this.candies = candies;
 	}
 
 	public String getName() {
@@ -52,12 +60,52 @@ public class Machine {
 		this.totalCash = totalCash;
 	}
 
-	public AmountOfCoins getAmountOfCoins() {
-		return amountOfCoins;
+	public int getCoins5Cent() {
+		return coins5Cent;
 	}
 
-	public void setAmountOfCoins(AmountOfCoins amountOfCoins) {
-		this.amountOfCoins = amountOfCoins;
+	public void setCoins5Cent(int coins5Cent) {
+		this.coins5Cent = coins5Cent;
+	}
+
+	public int getCoins10Cent() {
+		return coins10Cent;
+	}
+
+	public void setCoins10Cent(int coins10Cent) {
+		this.coins10Cent = coins10Cent;
+	}
+
+	public int getCoins20Cent() {
+		return coins20Cent;
+	}
+
+	public void setCoins20Cent(int coins20Cent) {
+		this.coins20Cent = coins20Cent;
+	}
+
+	public int getCoins50Cent() {
+		return coins50Cent;
+	}
+
+	public void setCoins50Cent(int coins50Cent) {
+		this.coins50Cent = coins50Cent;
+	}
+
+	public int getCoins1Euro() {
+		return coins1Euro;
+	}
+
+	public void setCoins1Euro(int coins1Euro) {
+		this.coins1Euro = coins1Euro;
+	}
+
+	public int getCoins2Euro() {
+		return coins2Euro;
+	}
+
+	public void setCoins2Euro(int coins2Euro) {
+		this.coins2Euro = coins2Euro;
 	}
 
 	public List<Candy> getCandies() {

@@ -6,13 +6,8 @@
 	<persistence-unit name="candyMachineDB"
 		transaction-type="RESOURCE_LOCAL">
 		<class>model.entities.User</class>
-		<class>model.entities.Purchase</class>
-		<class>model.entities.MoneyDeposit</class>
 		<class>model.entities.Machine</class>
-		<class>model.entities.History</class>
-		<class>model.entities.CandyDeposit</class>
 		<class>model.entities.Candy</class>
-		<class>model.entities.AmountOfCoins</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver"
 				value="com.mysql.cj.jdbc.Driver" />

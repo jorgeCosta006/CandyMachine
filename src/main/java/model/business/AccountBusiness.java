@@ -1,19 +1,26 @@
 package model.business;
 
-import Enums.EnumRoles;
+import java.util.List;
+
 import dao.MachineDao;
 import dao.UserDao;
+import dao.UserRoleDao;
 import model.entities.Machine;
 import model.entities.User;
+import model.entities.UserRole;
 import model.interfaces.IMachineDao;
 import model.interfaces.IUserDao;
+import model.interfaces.IUserRoleDao;
 
 public class AccountBusiness {
 
-	public void addNewUser(String name, String email, String password, String role) {
+	public void addNewUser(String name, String email, String password, String userRoleDescription) {
 		IUserDao ud = new UserDao();
+		IUserRoleDao urd = new UserRoleDao();
+		
+		UserRole userRole = urd.findUserRoleByDescription(userRoleDescription);
 
-		User user = new User(name, email, password, true, EnumRoles.valueOf(role));
+		User user = new User(name, email, password, true, userRole);
 		ud.createOrUpdateUser(user);
 	}
 
@@ -36,15 +43,15 @@ public class AccountBusiness {
 		}
 	}
 
-	public User findUserById(int userId) {
-		IUserDao ud = new UserDao();
-
-		User user = ud.userById(userId);
-		if (user == null)
-			return null;
-
-		return user;
-	}
+//	public User findUserById(int userId) {
+//		IUserDao ud = new UserDao();
+//
+//		User user = ud.userById(userId);
+//		if (user == null)
+//			return null;
+//
+//		return user;
+//	}
 
 	public User findUserByEmail(String email) {
 		IUserDao ud = new UserDao();
@@ -65,15 +72,26 @@ public class AccountBusiness {
 
 		return machine;
 	}
-
-	public Machine findMachineById(int machineId) {
-		IMachineDao md = new MachineDao();
-
-		Machine machine = md.machineById(machineId);
-		if (machine == null)
+	
+	public List<UserRole> returnUserRoles() {
+		IUserRoleDao urd = new UserRoleDao();
+		
+		List<UserRole> list = urd.listOfRoles();
+		
+		if (list == null)
 			return null;
 
-		return machine;
+		return list;
 	}
+
+//	public Machine findMachineById(int machineId) {
+//		IMachineDao md = new MachineDao();
+//
+//		Machine machine = md.machineById(machineId);
+//		if (machine == null)
+//			return null;
+//
+//		return machine;
+//	}
 
 }

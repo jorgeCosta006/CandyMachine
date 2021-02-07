@@ -1,8 +1,6 @@
 package beans;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -17,10 +15,10 @@ import org.primefaces.PrimeFaces;
 
 import model.business.MainPageBusiness;
 import model.business.MoneyBusiness;
-import model.entities.AmountOfCoins;
 import model.entities.Candy;
 import model.entities.Machine;
 import model.entities.User;
+import utilities.AmountOfCoins;
 
 @ManagedBean(name = "machineBean", eager = true)
 @ViewScoped
@@ -30,6 +28,7 @@ public class MachineBean implements Serializable {
 	private String name;
 
 	private Candy candy;
+	private Machine machine;
 
 	private int coins5Cent;
 	private int coins10Cent;
@@ -44,6 +43,11 @@ public class MachineBean implements Serializable {
 	public void list() {
 		MainPageBusiness mpb = new MainPageBusiness();
 		candies = mpb.returnCandyList();
+
+		Machine machineRequest = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("loggedMachine");
+		setMachine(machineRequest);
+
 	}
 
 	public List<Candy> getCandies() {
@@ -118,6 +122,14 @@ public class MachineBean implements Serializable {
 		this.totalMoney = totalMoney;
 	}
 
+	public Machine getMachine() {
+		return machine;
+	}
+
+	public void setMachine(Machine machine) {
+		this.machine = machine;
+	}
+
 	public double getTotalMoneyInTheMachine() {
 		Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("loggedMachine");
@@ -132,7 +144,7 @@ public class MachineBean implements Serializable {
 	public boolean checkForEnoughMoney() {
 		AmountOfCoins aoc = new AmountOfCoins(coins5Cent, coins10Cent, coins20Cent, coins50Cent, coins1Euro,
 				coins2Euro);
-		double clientMoney = MoneyBusiness.calculateTotalMoney(aoc);
+		double clientMoney = MoneyBusiness.calculateTotal(aoc);
 		double candyPrice = candy.getPrice();
 
 		if (clientMoney < candyPrice) {
@@ -142,36 +154,49 @@ public class MachineBean implements Serializable {
 		return true;
 	}
 
-	public void buyCandy() {
+	public String buyCandy() {
+
+		boolean candyBought = false;
+		AmountOfCoins changeInAmountOfCoins = null;
+		double changeValue = 0.0;
+
 		if (checkForEnoughMoney()) {
 
-			MainPageBusiness mpb = new MainPageBusiness();
+			MoneyBusiness mb = new MoneyBusiness();
+			AmountOfCoins amountOfCoinsAdded = new AmountOfCoins(coins5Cent, coins10Cent, coins20Cent, coins50Cent,
+					coins1Euro, coins2Euro);
+
+			Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("loggedMachine");
 			User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
-			boolean candyBought = mpb.buyCandy(user, candy, 1);
-			AmountOfCoins changeInAmountOfCoins = null;
-			double changeValue = 0.0;
+			
+			NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
+			nf_in.setMaximumFractionDigits(2);
+			String result = nf_in.format(totalMoney - candy.getPrice());
+			changeValue = Double.valueOf(result);
+			changeInAmountOfCoins = mb.giveChange(machine, amountOfCoinsAdded, changeValue);
 
-			if (candyBought) {
-				MoneyBusiness mb = new MoneyBusiness();
-				Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-						.get("loggedMachine");
-				AmountOfCoins amountOfCoins = mb.createAmountOfCoins(coins5Cent, coins10Cent, coins20Cent, coins50Cent,
-						coins1Euro, coins2Euro);
-				mb.changeMoneyinMachine(machine, amountOfCoins);
+			if (changeInAmountOfCoins != null) {
+				MainPageBusiness mpb = new MainPageBusiness();
 				
-				NumberFormat nf_in = NumberFormat.getNumberInstance(Locale.US);
-				nf_in.setMaximumFractionDigits(2);
-				String result = nf_in.format(totalMoney - candy.getPrice());
-				changeValue = Double.valueOf(result);
-				changeInAmountOfCoins = mb.giveChange(machine, changeValue);
-			}
+				mpb.changeCandyQuantityAndCreateCandyMovement(user, candy, machine);
+				mb.createMoneyMovement("In", amountOfCoinsAdded, user, machine);
+				if (changeValue != 0)
+					mb.createMoneyMovement("Out", changeInAmountOfCoins, user, machine);
 
-			showMessage(candyBought, changeInAmountOfCoins, changeValue);
-		} else {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Not enough money");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+				candyBought = true;
+
+			} else {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message",
+						"Not enough change, try to put the right amount");
+				PrimeFaces.current().dialog().showMessageDynamic(message);
+				return "";
+			}
 		}
+
+		showMessage(candyBought, changeInAmountOfCoins, changeValue);
 		turnCoinsToZero(null);
+		return "";
 	}
 
 	public void showMessage(boolean candyBought, AmountOfCoins aoc, double changeValue) {
@@ -183,7 +208,8 @@ public class MachineBean implements Serializable {
 							+ aoc.getCoins50Cent() + ";\n 1 euro: " + aoc.getCoins1Euro() + ";\n 2 euro: "
 							+ aoc.getCoins2Euro() + ";");
 		} else {
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", "Not enough candies in the machine!");
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Not enough money");
+			PrimeFaces.current().dialog().showMessageDynamic(message);
 		}
 
 		PrimeFaces.current().dialog().showMessageDynamic(message);
@@ -228,10 +254,6 @@ public class MachineBean implements Serializable {
 		}
 			break;
 		}
-
-//		DecimalFormat df = new DecimalFormat("#,###.00");
-//		totalMoney = Double.valueOf(df.format(totalMoney));
-
 	}
 
 	public void turnCoinsToZero(Candy candy) {
@@ -255,8 +277,9 @@ public class MachineBean implements Serializable {
 					.get("loggedMachine");
 			User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
 			MoneyBusiness mb = new MoneyBusiness();
-			double moneyInTheMachine = mb.moneyDeposit(machine, user, coins5Cent, coins10Cent, coins20Cent, coins50Cent,
+			AmountOfCoins amountOfCoinsAdded = new AmountOfCoins(coins5Cent, coins10Cent, coins20Cent, coins50Cent,
 					coins1Euro, coins2Euro);
+			double moneyInTheMachine = mb.moneyDeposit(machine, user, amountOfCoinsAdded);
 
 			totalMoneyInTheMachine = moneyInTheMachine;
 			totalMoney = 0.0;

@@ -2,6 +2,7 @@ package beans;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -13,6 +14,7 @@ import org.primefaces.PrimeFaces;
 import model.business.AccountBusiness;
 import model.entities.Machine;
 import model.entities.User;
+import model.entities.UserRole;
 
 @ManagedBean(name = "userBean", eager = true)
 @SessionScoped
@@ -31,6 +33,13 @@ public class UserBean implements Serializable {
 	private String crRole;
 
 	private User user;
+
+	private List<UserRole> roles;
+
+	public void construct() {
+		AccountBusiness ab = new AccountBusiness();
+		roles = ab.returnUserRoles();
+	}
 
 	public String getEmail() {
 		return email;
@@ -112,6 +121,14 @@ public class UserBean implements Serializable {
 		this.crRole = crRole;
 	}
 
+	public List<UserRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<UserRole> roles) {
+		this.roles = roles;
+	}
+
 	public void processLogin() {
 		AccountBusiness ab = new AccountBusiness();
 		User user = ab.findUserByEmailAndPassword(email, password);
@@ -126,7 +143,7 @@ public class UserBean implements Serializable {
 				Machine machine = ab.findMachineByName("ChoclateFactory");
 				errorLogin = false;
 				this.user = user;
-				role = user.getUserRole().name();
+				role = user.getUserRole().getDescription();
 				name = user.getName();
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedUser", user);
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedMachine", machine);
@@ -139,33 +156,30 @@ public class UserBean implements Serializable {
 	}
 
 	public String createUser() {
-		AccountBusiness account = new AccountBusiness();
-		User user = account.findUserByEmail(crEmail);
 
 		if (this.name == "" || this.crEmail == "" || this.crPassword == "" || this.role == null) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Must fill all data.");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Message", "Must fill all data."));
+			PrimeFaces.current().executeScript("PF('crUser').show()");
 			return "Must fill all data";
 		} else if (!this.crPassword.equals(repeatCrPassword)) {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Passwords must match.");
-			PrimeFaces.current().dialog().showMessageDynamic(message);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Message", "Passwords must match."));
+			PrimeFaces.current().executeScript("PF('crUser').show()");
 			return "Passwords must match.";
 		}
 
+		AccountBusiness account = new AccountBusiness();
+		User user = account.findUserByEmail(crEmail);
 		if (user == null) {
-			try {
-				account.addNewUser(name, crEmail, crPassword, role);
-				FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", "User created.");
-				PrimeFaces.current().dialog().showMessageDynamic(message);
-				return "Created";
-			} catch (IOException e) {
-				e.printStackTrace();
-				return "Error";
-			}
-		} else {
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Email already exists.");
+			account.addNewUser(name, crEmail, crPassword, role);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", "User created.");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return "Created";
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Message", "Email already exists."));
+			PrimeFaces.current().executeScript("PF('crUser').show()");
 			return "Email already exists";
 		}
 	}
@@ -176,6 +190,7 @@ public class UserBean implements Serializable {
 			this.name = "";
 			this.email = "";
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedUser", null);
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loggedMachine", null);
 			FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

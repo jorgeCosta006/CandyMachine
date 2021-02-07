@@ -6,9 +6,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.OrderBy;
 
 import model.business.HistoryBusiness;
-import model.entities.History;
+import model.entities.CandyMovement;
+import model.entities.Machine;
+import model.entities.MoneyMovement;
 import model.entities.User;
 
 @ManagedBean(name = "historyBean", eager = true)
@@ -16,42 +19,45 @@ import model.entities.User;
 public class HistoryBean {
 
 	private static final long serialVersionUID = 1L;
-	private List<History> history;
-	private List<History> candyDepositHistory;
-	private List<History> moneyDepositHistory;
+	
+	private List<CandyMovement> candyMovement;
+	private List<MoneyMovement> moneyMovement;
+	private List<CandyMovement> candyMovementToClient;
 
 	@PostConstruct
 	public void list() {
 		HistoryBusiness hb = new HistoryBusiness();
 		User user = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedUser");
+		Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("loggedMachine");
 		if(user != null) {
-			history = hb.returnHistoryList(user.getUserId());
-			candyDepositHistory = hb.returnCandyDepositHistoryList(user.getUserId());
-			moneyDepositHistory = hb.returnMoneyDepositHistoryList(user.getUserId());
+			candyMovement = hb.returnCandyMovementList(machine.getMachineId());
+			moneyMovement = hb.returnMoneyMovementList(machine.getMachineId());
+			candyMovementToClient = hb.returnCandyMovementListToClient(user.getUserId());
 		}
 	}
 
-	public List<History> getHistory() {
-		return history;
+	public List<CandyMovement> getCandyMovement() {
+		return candyMovement;
 	}
 
-	public void setHistory(List<History> history) {
-		this.history = history;
+	public void setCandyMovement(List<CandyMovement> candyMovement) {
+		this.candyMovement = candyMovement;
 	}
 
-	public List<History> getCandyDepositHistory() {
-		return candyDepositHistory;
+	public List<MoneyMovement> getMoneyMovement() {
+		return moneyMovement;
 	}
 
-	public void setCandyDepositHistory(List<History> candyDepositHistory) {
-		this.candyDepositHistory = candyDepositHistory;
+	public void setMoneyMovement(List<MoneyMovement> moneyMovement) {
+		this.moneyMovement = moneyMovement;
 	}
 
-	public List<History> getMoneyDepositHistory() {
-		return moneyDepositHistory;
+	public List<CandyMovement> getCandyMovementToClient() {
+		return candyMovementToClient;
 	}
 
-	public void setMoneyDepositHistory(List<History> moneyDepositHistory) {
-		this.moneyDepositHistory = moneyDepositHistory;
+	public void setCandyMovementToClient(List<CandyMovement> candyMovementToClient) {
+		this.candyMovementToClient = candyMovementToClient;
 	}
 }

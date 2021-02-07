@@ -12,9 +12,7 @@
 
 			<p:menubar style="background-color: white; border: none">
 				<p:menuitem>
-					<img
-						src="./img/candyLogo.jpg"
-						alt="img" style="width: 180px"></img>
+					<img src="./img/candyLogo.jpg" alt="img" style="width: 180px"></img>
 				</p:menuitem>
 				<p:menuitem>
 					<div style="margin-top: 33px">
@@ -52,7 +50,7 @@
 
 				<f:facet name="options">
 					<div style="margin-top: 30px">
-						<p:outputLabel style="font-size: x-large" value="#{userBean.name}"></p:outputLabel>
+						<p:outputLabel style="font-size: x-large" value="#{nameBean.name}"></p:outputLabel>
 						<p:commandButton value="Logout" action="#{userBean.processLogout}"
 							style="margin-left: 40px; background: #ffe687; color: white; font-weight: normal;" />
 					</div>
@@ -61,7 +59,8 @@
 		</h:form>
 	</div>
 </h:head>
-<h:body style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
+<h:body
+	style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
 background-size: cover; background-position: center;">
 	<div style="text-align: -webkit-center;">
 		<div
@@ -72,6 +71,21 @@ background-size: cover; background-position: center;">
 					<h1 style="margin-right: 5px">Total money in the machine:</h1>
 					<p:outputLabel value="#{machineBean.totalMoneyInTheMachine} €"
 						style="font-size: larger"></p:outputLabel>
+
+				</div>
+				<div style="display: flex; flex-direction: row; justify-content: center; margin-bottom: 10px">
+					<p:outputLabel value="0.05:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins5Cent}" style="margin-right: 20px"/>
+					<p:outputLabel value="0.10:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins10Cent}" style="margin-right: 20px"/>
+					<p:outputLabel value="0.20:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins20Cent}" style="margin-right: 20px"/>
+					<p:outputLabel value="0.50:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins50Cent}" style="margin-right: 20px"/>
+					<p:outputLabel value="1.00:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins1Euro}" style="margin-right: 20px"/>
+					<p:outputLabel value="2.00:" style="font-weight: bold; margin-right: 10px"/>
+					<p:outputLabel value="#{machineBean.machine.coins2Euro}" style="margin-right: 20px"/>
 				</div>
 				<div style="width: fit-content;">
 					<p:panel style="border-radius: 10px">

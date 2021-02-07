@@ -3,22 +3,14 @@ package model.business;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-
 import dao.CandyDao;
-import dao.CandyDepositDao;
-import dao.HistoryDao;
-import dao.PurchaseDao;
+import dao.CandyMovementDao;
 import model.entities.Candy;
-import model.entities.CandyDeposit;
-import model.entities.History;
+import model.entities.CandyMovement;
 import model.entities.Machine;
-import model.entities.Purchase;
 import model.entities.User;
 import model.interfaces.ICandyDao;
-import model.interfaces.ICandyDepositDao;
-import model.interfaces.IHistoryDao;
-import model.interfaces.IPurchaseDao;
+import model.interfaces.ICandyMovementDao;
 
 public class MainPageBusiness {
 
@@ -27,72 +19,66 @@ public class MainPageBusiness {
 		return cd.listOfCandies();
 	}
 
-	public boolean buyCandy(User user, Candy candy, int numberOfCandies) {
+	public void changeCandyQuantityAndCreateCandyMovement(User user, Candy candy, Machine machine) {
 		ICandyDao cd = new CandyDao();
-		IPurchaseDao pd = new PurchaseDao();
-		IHistoryDao hd = new HistoryDao();
+		ICandyMovementDao cmd = new CandyMovementDao();
 
-		Integer currentNumberOfCandies = candy.getQuantity();
+		candy.setQuantity(candy.getQuantity() - 1);
+		cd.createOrUpdateCandy(candy);
 
-		if (currentNumberOfCandies >= numberOfCandies) {
-			int changedNumberOfCandies = currentNumberOfCandies - numberOfCandies;
-			double totalPrice = candy.getPrice() * numberOfCandies;
-			candy.setQuantity(changedNumberOfCandies);
-			cd.createOrUpdateCandy(candy);
+		CandyMovement candyMovement = new CandyMovement("Bought", candy.getName(), candy.getPrice(), 1, new Date(),
+				candy, user, machine);
+		cmd.createOrUpdateCandyMovement(candyMovement);
 
-			Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("loggedMachine");
-			Purchase purchase = new Purchase(user, candy, numberOfCandies, totalPrice, new Date(), machine);
-			pd.createPurchase(purchase);
-			History history = new History("Purchase", user, purchase, null, null);
-			hd.newHistory(history);
-
-			System.out.println("Bought");
-			return true;
-
-		} else {
-			System.out.println("Not enough candies in the machine");
-			return false;
-		}
 	}
 
-	public void removeCandy(Candy candy) {
+	public void removeCandy(Candy candy, User user, Machine machine) {
 		ICandyDao cd = new CandyDao();
 		candy.setActive(false);
 		cd.createOrUpdateCandy(candy);
+
+		ICandyMovementDao cmd = new CandyMovementDao();
+		CandyMovement candyMovement = new CandyMovement("Removed", candy.getName(), null, null, new Date(), candy, user,
+				machine);
+		cmd.createOrUpdateCandyMovement(candyMovement);
 	}
 
-	public boolean createOrUpdateCandy(User user, Candy candy, String name, double price, int quantity) {
+	public boolean createOrUpdateCandy(User user, Candy candy, Machine machine, String name, double price,
+			int quantity) {
 		ICandyDao cd = new CandyDao();
+		ICandyMovementDao cmd = new CandyMovementDao();
+		CandyMovement candyMovement = null;
+		CandyMovement candyMovementPrice = null;
 
 		if (candy != null) {
+			if (quantity != candy.getQuantity()) {
+				candyMovement = new CandyMovement("Updated Quantity", candy.getName(), null, quantity, new Date(),
+						candy, user, machine);
+				cmd.createOrUpdateCandyMovement(candyMovement);
+			}
+
+			if (price != candy.getQuantity()) {
+				candyMovementPrice = new CandyMovement("Updated Price", candy.getName(), price, null, new Date(), candy,
+						user, machine);
+				cmd.createOrUpdateCandyMovement(candyMovementPrice);
+			}
+
 			candy.setQuantity(quantity);
 			candy.setPrice(price);
+			cd.createOrUpdateCandy(candy);
 		} else {
 			List<Candy> candies = cd.listOfCandies();
-			for(Candy obj : candies) {
-				if(obj.getName().equalsIgnoreCase(name) && obj.isActive() == true) {
+			for (Candy obj : candies) {
+				if (obj.getName().equalsIgnoreCase(name) && obj.isActive() == true) {
 					return false;
 				}
 			}
 			candy = new Candy(name, price, quantity, true);
+			cd.createOrUpdateCandy(candy);
+			candyMovement = new CandyMovement("Created", name, price, quantity, new Date(), candy, user, machine);
+			cmd.createOrUpdateCandyMovement(candyMovement);
 		}
 
-		cd.createOrUpdateCandy(candy);
-		candyDeposit(user, candy, quantity);
-		
 		return true;
-	}
-
-	public void candyDeposit(User user, Candy candy, int quantity) {
-		ICandyDepositDao cdd = new CandyDepositDao();
-		IHistoryDao hd = new HistoryDao();
-
-		Machine machine = (Machine) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("loggedMachine");
-		CandyDeposit candyDeposit = new CandyDeposit(candy, user, quantity, new Date(), machine);
-		cdd.createCandyDeposit(candyDeposit);
-		History history = new History("Candy Deposit:", user, null, candyDeposit, null);
-		hd.newHistory(history);
 	}
 }

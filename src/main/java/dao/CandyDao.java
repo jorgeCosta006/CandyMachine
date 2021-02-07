@@ -10,16 +10,17 @@ import model.interfaces.ICandyDao;
 import utilities.ConEntityManager;
 
 public class CandyDao implements ICandyDao {
-	static EntityManager em = ConEntityManager.getInstance();
 	
 	//We don't remove candies, we change isActive to false;
 	public void createOrUpdateCandy(Candy candy) {
+		EntityManager em = ConEntityManager.getInstance();
 		em.getTransaction().begin();
 		em.persist(candy);
 		em.getTransaction().commit();
 	}
 	
 	public Candy findCandyById(int candyId) {
+		EntityManager em = ConEntityManager.getInstance();
 		Query q = em.createQuery("Select p from Candy p where candyId = " + candyId + "");
 		if(q.getResultList().isEmpty())
 			return null;
@@ -29,6 +30,7 @@ public class CandyDao implements ICandyDao {
 	}
 	
 	public List<Candy> listOfCandies() {
+		EntityManager em = ConEntityManager.getInstance();
 		Query q = em.createQuery("Select p from Candy p where isActive = " + 1);
 		List<Candy> list = q.getResultList();
 		return list;

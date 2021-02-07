@@ -1,7 +1,5 @@
 package beans;
 
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -11,7 +9,6 @@ import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 
 import model.business.AccountBusiness;
-import model.business.HistoryBusiness;
 import model.entities.User;
 
 @ManagedBean(name = "configurationsBean", eager = true)
@@ -56,11 +53,12 @@ public class ConfigurationsBean {
 		this.rpPassword = rpPassword;
 	}
 
-	public void changeUserData() {
-		if (name == null || password == null || rpPassword == null) {
+	public String changeUserData() {
+		if (name == "" || password == "" || rpPassword == "") {
 
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Must fill all data");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return "";
 		}
 
 		if (password.equals(rpPassword)) {
@@ -70,10 +68,12 @@ public class ConfigurationsBean {
 
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Message", "User information updated!");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return "";
 
 		} else {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Message", "Passwords must match!");
 			PrimeFaces.current().dialog().showMessageDynamic(message);
+			return "";
 		}
 	}
 }

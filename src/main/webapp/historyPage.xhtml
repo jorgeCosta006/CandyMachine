@@ -11,9 +11,7 @@
 		<h:form>
 			<p:menubar style="background-color: white; border: none">
 				<p:menuitem>
-					<img
-						src="./img/candyLogo.jpg"
-						alt="img" style="width: 180px"></img>
+					<img src="./img/candyLogo.jpg" alt="img" style="width: 180px"></img>
 				</p:menuitem>
 				<p:menuitem>
 					<div style="margin-top: 33px">
@@ -51,7 +49,7 @@
 
 				<f:facet name="options">
 					<div style="margin-top: 30px">
-						<p:outputLabel style="font-size: x-large" value="#{userBean.name}"></p:outputLabel>
+						<p:outputLabel style="font-size: x-large" value="#{nameBean.name}"></p:outputLabel>
 						<p:commandButton value="Logout" action="#{userBean.processLogout}"
 							style="margin-left: 40px; background: #ffe687; color: white; font-weight: normal;" />
 					</div>
@@ -60,31 +58,38 @@
 		</h:form>
 	</div>
 </h:head>
-<h:body style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
+<h:body
+	style="background-image: url('./img/candyBase.png'); background-repeat: no-repeat; background-attachment: fixed;
 background-size: cover; background-position: center;">
 	<h:form rendered="#{userBean.role == 'CLIENT'}">
 		<div class="card" style="text-align: -webkit-center;">
 			<h2 style="font-family: Arial, Helvetica, sans-serif;">Purchase</h2>
-			<p:dataTable var="product" value="#{historyBean.history}"
-				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+			<p:dataTable var="product"
+				value="#{historyBean.candyMovementToClient}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+				rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+				paginatorPosition="bottom" tableStyle="table-layout: auto;" sortBy="#{product.date}" sortOrder="DESCENDING">
 				<p:column headerText="Movimento">
-					<h:outputText value="#{product.movimento}" />
+					<h:outputText value="#{product.action}" />
 				</p:column>
 
 				<p:column headerText="Candy Name">
-					<h:outputText value="#{product.purchase.candy.name}" />
+					<h:outputText value="#{product.candyName}" />
 				</p:column>
 
 				<p:column headerText="Quantity">
-					<h:outputText value="#{product.purchase.quantity}" />
+					<h:outputText value="#{product.quantity}" />
 				</p:column>
 
 				<p:column headerText="Price">
-					<h:outputText value="#{product.purchase.totalPrice}" />
+					<h:outputText value="#{product.price}" />
 				</p:column>
 
-				<p:column headerText="Date">
-					<h:outputText value="#{product.purchase.dateTime}" />
+				<p:column headerText="Date" sortBy="#{product.date}">
+					<h:outputText value="#{product.date}"/>
 				</p:column>
 			</p:dataTable>
 		</div>
@@ -92,43 +97,80 @@ background-size: cover; background-position: center;">
 
 	<h:form rendered="#{userBean.role == 'ADMIN'}">
 		<div class="card" style="text-align: -webkit-center;">
-			<h2 style="font-family: Arial, Helvetica, sans-serif;">Money Deposit</h2>
-			<p:dataTable var="product" value="#{historyBean.moneyDepositHistory}"
-				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+			<h2 style="font-family: Arial, Helvetica, sans-serif;">Money Movement</h2>
+			<p:dataTable var="product" value="#{historyBean.moneyMovement}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+				rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+				paginatorPosition="bottom" tableStyle="table-layout: auto;" sortBy="#{product.date}" sortOrder="DESCENDING">
 				<p:column headerText="Movimento">
-					<h:outputText value="#{product.movimento}" />
+					<h:outputText value="#{product.action}" />
 				</p:column>
 
-				<p:column headerText="Value added">
-					<h:outputText value="#{product.moneyDeposit.totalValue} €" />
+				<p:column headerText="Value">
+					<h:outputText value="#{product.totalValue} €" />
 				</p:column>
 
-				<p:column headerText="Date">
-					<h:outputText value="#{product.moneyDeposit.date}" />
+				<p:column headerText="0.05 €">
+					<h:outputText value="#{product.coins5Cent}" />
+				</p:column>
+				<p:column headerText="0.10 €">
+					<h:outputText value="#{product.coins10Cent}" />
+				</p:column>
+				<p:column headerText="0.20 €">
+					<h:outputText value="#{product.coins20Cent}" />
+				</p:column>
+				<p:column headerText="0.50 €">
+					<h:outputText value="#{product.coins50Cent}" />
+				</p:column>
+				<p:column headerText="1.00 €">
+					<h:outputText value="#{product.coins1Euro}" />
+				</p:column>
+				<p:column headerText="2.00 €">
+					<h:outputText value="#{product.coins2Euro}" />
+				</p:column>
+
+				<p:column headerText="Date" sortBy="#{product.date}">
+					<h:outputText value="#{product.date}"/>
 				</p:column>
 			</p:dataTable>
 		</div>
 	</h:form>
 
-	<h:form rendered="#{userBean.role == 'ADMIN'}" style="margin-top: 100px">
+	<h:form rendered="#{userBean.role == 'ADMIN'}"
+		style="margin-top: 100px">
 		<div class="card" style="text-align: -webkit-center;">
-			<h2 style="font-family: Arial, Helvetica, sans-serif;">Candy Deposit</h2>
-			<p:dataTable var="product" value="#{historyBean.candyDepositHistory}"
-				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;">
+			<h2 style="font-family: Arial, Helvetica, sans-serif;">Candy Movement</h2>
+			<p:dataTable var="product" value="#{historyBean.candyMovement}"
+				style="width: 1000px; text-align-last: center; box-shadow: 5px 6px 8px 0px #888888;"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+				rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+				paginatorPosition="bottom" tableStyle="table-layout: auto;" sortBy="#{product.date}" sortOrder="DESCENDING">
 				<p:column headerText="Movimento">
-					<h:outputText value="#{product.movimento}" />
+					<h:outputText value="#{product.action}" />
 				</p:column>
 
-				<p:column headerText="Value added">
-					<h:outputText value="#{product.candyDeposit.candy.name}" />
+				<p:column headerText="Candy Name">
+					<h:outputText value="#{product.candyName}" />
 				</p:column>
 
-				<p:column headerText="Machine money">
-					<h:outputText value="#{product.candyDeposit.quantity}" />
+				<p:column headerText="Price">
+					<h:outputText value="-" rendered="#{product.price eq null}" />
+					<h:outputText value="#{product.price} €"
+						rendered="#{product.price != null}" />
 				</p:column>
 
-				<p:column headerText="Date">
-					<h:outputText value="#{product.candyDeposit.date}" />
+				<p:column headerText="Quantity">
+					<h:outputText
+						value="#{product.quantity eq null ? '-' : product.quantity}" />
+				</p:column>
+
+				<p:column headerText="Date" sortBy="#{product.date}">
+					<h:outputText value="#{product.date}"/>
 				</p:column>
 			</p:dataTable>
 		</div>
